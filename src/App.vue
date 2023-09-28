@@ -1,9 +1,11 @@
 <script setup>
-import { ref } from 'vue'
-import Home from './components/Home.vue';
+import { ref, computed } from 'vue'
+import { useFavoriteStore } from './stores/favorites';
+
+const store = useFavoriteStore()
 
 const themeSwitched = ref(false)
-
+let favoritesBool = computed(()=>store.favorites.length > 0)
 </script>
 
 <template>
@@ -12,9 +14,24 @@ const themeSwitched = ref(false)
       <div class="app-container">
         <header class="app-header dark-brown">
           <h1>My Pet Store</h1>
+          <v-toolbar  color="grey-lighten-4">
+            <v-toolbar-items>
+              <v-btn to="/">Home</v-btn>
+              <v-btn to="/pets">Pets</v-btn>
+            </v-toolbar-items>
+            <v-spacer></v-spacer>
+            <router-link to="/favorites" class="pe-3">
+                <v-badge overlap color="primary" v-model="favoritesBool">
+                  <template v-slot:badge>
+                    <span>{{ store.favorites.length }}</span>
+                  </template>
+                </v-badge>
+                <v-icon large color="grey">mdi-tag-heart</v-icon>
+            </router-link>
+          </v-toolbar>
           <v-btn @click="themeSwitched=!themeSwitched">Switch theme</v-btn>
         </header>
-        <Home />
+        <router-view></router-view>
         <footer class="app-footer dark-brown">
           <p>123 Main Street | Smithfield, RI 90987 | 345-456-5678</p>
         </footer>
